@@ -7,7 +7,11 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:5173',
+  },
+})
 export class UsersGateway {
   constructor(private readonly usersService: UsersService) {}
 
@@ -39,5 +43,10 @@ export class UsersGateway {
   @SubscribeMessage('findByEmail')
   findByEmail(@MessageBody() email: string) {
     return this.usersService.findByEmail(email);
+  }
+
+  @SubscribeMessage('loginUser')
+  handleLogin(@MessageBody() userInfo: { email: string; password: string }) {
+    return this.usersService.handleLogin(userInfo);
   }
 }

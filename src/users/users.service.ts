@@ -32,4 +32,13 @@ export class UsersService {
   findByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
   }
+
+  async handleLogin(userInfo: { email: string; password: string }) {
+    const { email, password } = userInfo;
+    let user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user || user.password !== password) {
+      return false;
+    }
+    return user;
+  }
 }

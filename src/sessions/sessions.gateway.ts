@@ -40,4 +40,9 @@ export class SessionsGateway {
   findUserSessions(@MessageBody() userId: number) {
     return this.sessionsService.findUserSessions(userId);
   }
+
+  @SubscribeMessage('getWeeklyHours')
+  getWeeklyHours(@MessageBody() userId: number) {
+    return this.sessionsService.calculateWeeklyHours(userId);
+  }
 }
