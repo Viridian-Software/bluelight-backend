@@ -25,6 +25,5 @@ model Session {
   user       User      @relation(fields: [userId], references: [id])
   loginTime  DateTime  @default(now())
   logoutTime DateTime?
-  delta      Float?
   userId     Int
 }

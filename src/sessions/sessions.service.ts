@@ -9,8 +9,9 @@ export class SessionsService {
   constructor(private prisma: PrismaService) {}
 
   //TODO: Fix the type annotations for create and update session DTOs
-  create(createSessionDto: any) {
-    return this.prisma.session.create({ data: createSessionDto });
+  async create(createSessionDto: any) {
+    let user = await this.prisma.session.create(createSessionDto);
+    return user;
   }
 
   findAll() {
@@ -43,7 +44,7 @@ export class SessionsService {
   */
   async calculateWeeklyHours(userId: number) {
     let userSessions = await this.prisma.session.findMany({
-      where: { userId },
+      where: { id: userId },
     });
     let currentDate = Date.now();
     let currentWeekSessions = userSessions.filter((session) =>
@@ -55,5 +56,12 @@ export class SessionsService {
         (currentValue.logoutTime.getTime() - currentValue.loginTime.getTime()),
       0,
     );
+  }
+
+  updateLogout(sessionId: number) {
+    return this.prisma.session.update({
+      where: { id: sessionId },
+      data: { logoutTime: new Date() },
+    });
   }
 }

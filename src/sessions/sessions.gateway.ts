@@ -12,7 +12,8 @@ export class SessionsGateway {
   constructor(private readonly sessionsService: SessionsService) {}
 
   @SubscribeMessage('createSession')
-  create(@MessageBody() createSessionDto: CreateSessionDto) {
+  // From the client, send payload as {data: {userId: num}}
+  create(@MessageBody() createSessionDto: any) {
     return this.sessionsService.create(createSessionDto);
   }
 
@@ -44,5 +45,10 @@ export class SessionsGateway {
   @SubscribeMessage('getWeeklyHours')
   getWeeklyHours(@MessageBody() userId: number) {
     return this.sessionsService.calculateWeeklyHours(userId);
+  }
+
+  @SubscribeMessage('enterLogoutTime')
+  enterLogoutTime(@MessageBody() sessionId: number) {
+    return this.sessionsService.updateLogout(sessionId);
   }
 }
