@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  fname    String
-  lname    String
-  email    String    @unique
-  isAdmin  Boolean   @default(false)
-  password String
-  Session  Session[]
+  id                Int       @id @default(autoincrement())
+  fname             String
+  lname             String
+  email             String    @unique
+  isAdmin           Boolean   @default(false)
+  password          String
+  Session           Session[]
+  isCurrentlyActive Boolean   @default(false)
 }
 
 model Session {

@@ -2,10 +2,12 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Server } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -14,6 +16,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 })
 export class UsersGateway {
   constructor(private readonly usersService: UsersService) {}
+  @WebSocketServer()
+  server: Server;
 
   @SubscribeMessage('createUser')
   create(@MessageBody() createUserDto: CreateUserDto) {
@@ -49,4 +53,7 @@ export class UsersGateway {
   handleLogin(@MessageBody() userInfo: { email: string; password: string }) {
     return this.usersService.handleLogin(userInfo);
   }
+
+  @SubscribeMessage('addActiveUser')
+  addActiveUser(@MessageBody() userId: number) {}
 }
