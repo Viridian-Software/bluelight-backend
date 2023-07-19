@@ -3,18 +3,19 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
     origin: 'http://localhost:5173',
   },
 })
-export class UsersGateway {
+export class UsersGateway implements OnGatewayDisconnect {
   constructor(private readonly usersService: UsersService) {}
   @WebSocketServer()
   server: Server;
@@ -54,6 +55,16 @@ export class UsersGateway {
     return this.usersService.handleLogin(userInfo);
   }
 
-  @SubscribeMessage('addActiveUser')
-  addActiveUser(@MessageBody() userId: number) {}
+  @SubscribeMessage('getActiveUsers')
+  getActiveUsers(@MessageBody() {}) {
+    return this.usersService.getActiveUsers();
+  }
+
+  @SubscribeMessage('setActiveStatus')
+  setActiveStatus(@MessageBody() userInfo: { id: number; status: boolean }) {
+    this.server.emit('userStatusChanged');
+    return this.usersService.setActiveStatus(userInfo);
+  }
+
+  handleDisconnect(client: Socket) {}
 }

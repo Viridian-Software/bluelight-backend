@@ -27,4 +27,5 @@ model Session {
   loginTime  DateTime  @default(now())
   logoutTime DateTime?
   userId     Int
+  socketId   String    @default("0")
 }

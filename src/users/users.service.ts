@@ -41,4 +41,18 @@ export class UsersService {
     }
     return user;
   }
+
+  getActiveUsers() {
+    return this.prisma.user.findMany({
+      where: { isCurrentlyActive: true },
+    });
+  }
+
+  setActiveStatus(userInfo: { id: number; status: boolean }) {
+    const { id, status } = userInfo;
+    return this.prisma.user.update({
+      where: { id },
+      data: { isCurrentlyActive: !status },
+    });
+  }
 }

@@ -9,8 +9,25 @@ export class SessionsService {
   constructor(private prisma: PrismaService) {}
 
   //TODO: Fix the type annotations for create and update session DTOs
-  async create(createSessionDto: any) {
-    let user = await this.prisma.session.create(createSessionDto);
+  async create(createSessionDto: any, clientId: string) {
+    let allSessions = (
+      await this.prisma.session.findMany({
+        where: { userId: createSessionDto.userId },
+      })
+    ).pop();
+    if (allSessions) {
+      let timeDelta =
+        allSessions.logoutTime.getTime() - allSessions.loginTime.getTime();
+      if (timeDelta <= 30000) {
+        return this.prisma.session.update({
+          where: { id: allSessions.id },
+          data: { socketId: clientId },
+        });
+      }
+    }
+    let user = await this.prisma.session.create({
+      data: { userId: createSessionDto.userId, socketId: clientId },
+    });
     return user;
   }
 
@@ -63,5 +80,15 @@ export class SessionsService {
       where: { id: sessionId },
       data: { logoutTime: new Date() },
     });
+  }
+
+  async getLastLogout(socketId: string) {
+    let lastSession = await this.prisma.session.findFirst({
+      where: { socketId },
+    });
+    if (lastSession.logoutTime !== null) {
+      return true;
+    }
+    return lastSession.id;
   }
 }
