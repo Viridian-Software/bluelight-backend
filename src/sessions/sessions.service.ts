@@ -12,7 +12,7 @@ export class SessionsService {
   async create(createSessionDto: any, clientId: string) {
     let allSessions = (
       await this.prisma.session.findMany({
-        where: { userId: createSessionDto.userId },
+        where: { userId: createSessionDto.data.userId },
       })
     ).pop();
     if (allSessions) {
@@ -26,7 +26,10 @@ export class SessionsService {
       }
     }
     let user = await this.prisma.session.create({
-      data: { userId: createSessionDto.userId, socketId: clientId },
+      data: {
+        socketId: clientId,
+        user: { connect: { id: createSessionDto.data.userId } },
+      },
     });
     return user;
   }
@@ -86,8 +89,11 @@ export class SessionsService {
     let lastSession = await this.prisma.session.findFirst({
       where: { socketId },
     });
-    if (lastSession.logoutTime !== null) {
-      return true;
+    if (Object.is(lastSession, null)) {
+      return;
+    }
+    if (Object.is(lastSession.logoutTime, null)) {
+      return this.updateLogout(lastSession.id);
     }
     return lastSession.id;
   }

@@ -48,11 +48,30 @@ export class UsersService {
     });
   }
 
-  setActiveStatus(userInfo: { id: number; status: boolean }) {
-    const { id, status } = userInfo;
+  setActiveStatus(
+    userInfo: { userId: number; status: boolean },
+    socketId: string,
+  ) {
+    const id = userInfo.userId;
+    const status = userInfo.status;
     return this.prisma.user.update({
       where: { id },
-      data: { isCurrentlyActive: !status },
+      data: { isCurrentlyActive: !status, socketId: socketId },
     });
+  }
+
+  async handleDisconnect(socketId: string) {
+    const user = await this.prisma.user.findFirst({ where: { socketId } });
+    if (Object.is(user, null)) {
+      return;
+    }
+    if (user.isCurrentlyActive === true) {
+      return this.prisma.user.update({
+        where: { id: user.id },
+        data: { isCurrentlyActive: false },
+      });
+    } else {
+      return;
+    }
   }
 }

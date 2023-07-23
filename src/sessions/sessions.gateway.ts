@@ -80,13 +80,7 @@ export class SessionsGateway implements OnGatewayDisconnect {
     console.log(client.id);
   }
 
-  async handleDisconnect(client: Socket) {
-    let checkLogoutTime: number | boolean =
-      await this.sessionsService.getLastLogout(client.id);
-    if (typeof checkLogoutTime === 'boolean') {
-      return;
-    } else {
-      return this.sessionsService.updateLogout(checkLogoutTime);
-    }
+  handleDisconnect(client: Socket) {
+    return this.sessionsService.getLastLogout(client.id);
   }
 }

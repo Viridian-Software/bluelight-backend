@@ -4,6 +4,7 @@ import {
   MessageBody,
   WebSocketServer,
   OnGatewayDisconnect,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -61,10 +62,15 @@ export class UsersGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('setActiveStatus')
-  setActiveStatus(@MessageBody() userInfo: { id: number; status: boolean }) {
+  setActiveStatus(
+    @MessageBody() userInfo: { userId: number; status: boolean },
+    @ConnectedSocket() client: Socket,
+  ) {
     this.server.emit('userStatusChanged');
-    return this.usersService.setActiveStatus(userInfo);
+    return this.usersService.setActiveStatus(userInfo, client.id);
   }
 
-  handleDisconnect(client: Socket) {}
+  handleDisconnect(client: Socket) {
+    return this.usersService.handleDisconnect(client.id);
+  }
 }

@@ -19,6 +19,7 @@ model User {
   password          String
   Session           Session[]
   isCurrentlyActive Boolean   @default(false)
+  socketId          String    @default("0")
 }
 
 model Session {
