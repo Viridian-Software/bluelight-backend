@@ -70,6 +70,11 @@ export class UsersGateway implements OnGatewayDisconnect {
     return this.usersService.setActiveStatus(userInfo, client.id);
   }
 
+  @SubscribeMessage('getUsersAndSessions')
+  getUsersAndSessions() {
+    return this.usersService.getUsersAndSessions();
+  }
+
   handleDisconnect(client: Socket) {
     return this.usersService.handleDisconnect(client.id);
   }

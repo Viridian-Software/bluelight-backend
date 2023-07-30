@@ -3,6 +3,7 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { isSameWeek } from 'date-fns';
+import { isDateBetweenLastWeekMondayAndFriday } from 'src/functions';
 
 @Injectable()
 export class SessionsService {
@@ -96,5 +97,13 @@ export class SessionsService {
       return this.updateLogout(lastSession.id);
     }
     return lastSession.id;
+  }
+
+  async getLastWeeksSessions() {
+    const sessions = await this.prisma.session.findMany();
+    const lastWeeksSessions = sessions.filter((session) =>
+      isDateBetweenLastWeekMondayAndFriday(session.loginTime),
+    );
+    return lastWeeksSessions;
   }
 }

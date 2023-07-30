@@ -46,8 +46,12 @@ export class SessionsGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('findOneSession')
-  findOne(@MessageBody() id: number) {
-    return this.sessionsService.findOne(id);
+  async findOne(@MessageBody() id: number) {
+    const session = await this.sessionsService.findOne(id);
+    if (!session) {
+      throw new NotFoundException('No Session Found for the Corresponding ID');
+    }
+    return session;
   }
 
   @SubscribeMessage('updateSession')
@@ -78,6 +82,11 @@ export class SessionsGateway implements OnGatewayDisconnect {
   @SubscribeMessage('test')
   test(@ConnectedSocket() client: Socket) {
     console.log(client.id);
+  }
+
+  @SubscribeMessage('getLastWeeksHours')
+  getLastWeeksHours() {
+    return this.sessionsService.getLastWeeksSessions();
   }
 
   handleDisconnect(client: Socket) {
