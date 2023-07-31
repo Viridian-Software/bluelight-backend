@@ -4,7 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port = process.env.port || 3000;
+  const port = process.env.PORT || 3000;
   const config = new DocumentBuilder()
     .setTitle('Bluelight Time Management')
     .setDescription('The API For Bluelight Time Management')
