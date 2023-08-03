@@ -12,7 +12,7 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 import { Server, Socket } from 'socket.io';
 import { NotFoundException } from '@nestjs/common';
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: '*' })
 export class SessionsGateway implements OnGatewayDisconnect {
   constructor(private readonly sessionsService: SessionsService) {}
 
