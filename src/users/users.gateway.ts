@@ -12,9 +12,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
+  cors: true,
 })
 export class UsersGateway implements OnGatewayDisconnect {
   constructor(private readonly usersService: UsersService) {}
