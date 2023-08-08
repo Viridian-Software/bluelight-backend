@@ -22,8 +22,13 @@ export class UsersGateway implements OnGatewayDisconnect {
   server: Server;
 
   @SubscribeMessage('createUser')
-  create(@MessageBody() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@MessageBody() createUserDto: CreateUserDto) {
+    try {
+      const result = await this.usersService.create(createUserDto);
+      return result;
+    } catch (error) {
+      return 'User Creation failed. Email already exists';
+    }
   }
 
   @SubscribeMessage('findAllUsers')
