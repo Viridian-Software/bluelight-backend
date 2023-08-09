@@ -64,9 +64,9 @@ export class SessionsService {
     is in milliseconds.
   */
   async calculateWeeklyHours(userId: number) {
-    let userSessions = await this.prisma.session.findMany({
-      where: { userId: userId },
-    });
+    let userSessions = (await this.prisma.session.findMany()).filter(
+      (session) => session.userId === userId,
+    );
     let currentDate = new Date();
     let currentWeekSessions = userSessions.filter((session) =>
       isSameWeek(session.loginTime, currentDate, { weekStartsOn: 1 }),
