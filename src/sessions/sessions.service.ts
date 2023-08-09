@@ -67,7 +67,7 @@ export class SessionsService {
     let userSessions = await this.prisma.session.findMany({
       where: { id: userId },
     });
-    let currentDate = Date.now();
+    let currentDate = new Date();
     let currentWeekSessions = userSessions.filter((session) =>
       isSameWeek(session.loginTime, currentDate, { weekStartsOn: 1 }),
     );
