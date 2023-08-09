@@ -65,7 +65,7 @@ export class SessionsService {
   */
   async calculateWeeklyHours(userId: number) {
     let userSessions = await this.prisma.session.findMany({
-      where: { id: userId },
+      where: { userId: userId },
     });
     let currentDate = new Date();
     let currentWeekSessions = userSessions.filter((session) =>
