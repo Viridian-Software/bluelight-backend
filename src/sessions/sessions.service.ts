@@ -71,6 +71,9 @@ export class SessionsService {
     let currentWeekSessions = userSessions.filter((session) =>
       isSameWeek(session.loginTime, currentDate, { weekStartsOn: 1 }),
     );
+    currentWeekSessions = currentWeekSessions.filter(
+      (session) => session.logoutTime !== null,
+    );
     return currentWeekSessions.reduce(
       (accumulator, currentValue) =>
         accumulator +
