@@ -109,4 +109,9 @@ export class SessionsService {
     );
     return lastWeeksSessions;
   }
+
+  async deleteAllSessions() {
+    const deleteSessions = await this.prisma.session.deleteMany({});
+    return deleteSessions;
+  }
 }

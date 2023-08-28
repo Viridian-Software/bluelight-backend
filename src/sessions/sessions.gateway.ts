@@ -93,6 +93,11 @@ export class SessionsGateway implements OnGatewayDisconnect {
     return this.sessionsService.getLastWeeksSessions();
   }
 
+  @SubscribeMessage('deleteAllSessions')
+  deleteAll() {
+    return this.sessionsService.deleteAllSessions();
+  }
+
   handleDisconnect(client: Socket) {
     return this.sessionsService.getLastLogout(client.id);
   }
